@@ -10,9 +10,7 @@ const BilboardCard = ({ billboard }) => {
   const handleAddProd = (id, billboard) => {
     dispatch(addToCart(id, billboard));
   };
-  // const getCurrentCart = () => {
-  //   dispatch(getThisCart(id));
-  // };
+
 
   return (
     <div className={styles.billboardCards}>
@@ -33,11 +31,8 @@ const BilboardCard = ({ billboard }) => {
           </div>
         </div>
         <div className={styles.orderBtn}>
-          <button onClick={() => handleAddProd(id, billboard)}>
-            Оформить заказ
-          </button>
+          <button onClick={() => handleAddProd(id,billboard)}>Оформить заказ</button>
         </div>
-        {/* <button onClick={getCurrentCart}>as</button> */}
       </div>
     </div>
   );

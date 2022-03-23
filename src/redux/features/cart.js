@@ -43,10 +43,28 @@ export default function cart(state = initialState, action) {
         items: [],
         error: action.error,
       };
+    case 'addCart/fetch/pending':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'addCart/fetch/fulfilled':
+      return {
+        ...state,
+        loading: false,
+        items: action.payload,
+      };
+    case 'addCart/fetch/rejected':
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+      };
+
     default:
       return state;
   }
-};
+}
 
 export const fetchCart = (id) => {
   return async (dispatch) => {
@@ -77,7 +95,7 @@ export const fetchCart = (id) => {
 };
 
 export const cartAddProduct = (id, STFormat) => {
-  console.log(STFormat)
+  console.log(STFormat);
   return async (dispatch) => {
     dispatch({ type: 'cart/patch/pending' });
     try {
@@ -93,7 +111,7 @@ export const cartAddProduct = (id, STFormat) => {
       console.log(json);
 
       if (json.error) {
-      dispatch({
+        dispatch({
           type: 'cart/patch/rejected',
           error: 'При запросе на сервер произошла ошибка',
         });
@@ -103,6 +121,37 @@ export const cartAddProduct = (id, STFormat) => {
     } catch (e) {
       console.log('ошибка');
       dispatch({ type: 'cart/patch/rejected', error: e.toString() });
+    }
+  };
+};
+export const addToCart = (id, billboard) => {
+  return async (dispatch) => {
+    dispatch({ type: 'addCart/fetch/pending' });
+    try {
+      const res = await fetch(`http://localhost:3030/cart/product/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ product: billboard }),
+      });
+      const json = await res.json();
+
+      console.log(json);
+
+      if (json.error) {
+        dispatch({
+          type: 'addCart/fetch/rejected',
+          error: 'Ошибка при запросе',
+        });
+      } else {
+        dispatch({ type: 'addCart/fetch/fulfilled', payload: json });
+      }
+    } catch (e) {
+      dispatch({
+        type: 'addCart/fetch/rejected',
+        error: e.toString(),
+      });
     }
   };
 };
